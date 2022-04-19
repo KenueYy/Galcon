@@ -17,7 +17,7 @@ public class Ship : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            _agent.SetDestination(Input.mousePosition);
+            _agent.SetDestination(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
 }

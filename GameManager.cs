@@ -15,15 +15,19 @@ public class GameManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit;
             hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-            Planet planet = hit.collider.GetComponent<Planet>();
-            if (!choicePlanets.Contains(planet))
+            if (hit.collider)
             {
-                choicePlanets.Add(planet);
+                Planet planet = hit.collider.GetComponent<Planet>();
+                if (!choicePlanets.Contains(planet))
+                {
+                    choicePlanets.Add(planet);
+                }
+                else if (choicePlanets.Contains(planet))
+                {
+                    choicePlanets.Remove(planet);
+                }
             }
-            else if(choicePlanets.Contains(planet))
-            {
-                choicePlanets.Remove(planet);
-            }
+            
         }
     }
 }
