@@ -10,6 +10,8 @@ public class Ship : MonoBehaviour
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _agent.updateRotation = false;
+        _agent.updateUpAxis = false;
     }
 
     // Update is called once per frame
@@ -17,7 +19,12 @@ public class Ship : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            _agent.SetDestination(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            Vector2 vector2 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            setDir(vector2);
         }
+    }
+    public void setDir(Vector2 vector2)
+    {
+        _agent.SetDestination(vector2);
     }
 }

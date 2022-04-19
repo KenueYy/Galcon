@@ -7,7 +7,7 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 {
     public PlanetUI planetUI;
     public PlanetObject data;
-    private int _countShips;
+    public int countShips;
     private SpriteRenderer _sr;
     private Outline _outline;
 
@@ -29,7 +29,7 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         StartCoroutine(routine: FactoryShipsCoroutine());
         _sr = GetComponent<SpriteRenderer>();
         _sr.sprite = data.sprite;
-        _countShips = Random.Range(data.minSpawnShip, data.maxSpawnShip);
+        countShips = Random.Range(data.minSpawnShip, data.maxSpawnShip);
     }
     private void OutlineEnable()
     {
@@ -51,8 +51,8 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     {
         while (true)
         {
-            _countShips += data.spawnRate;
-            planetUI.UpdateCountShips(_countShips);
+            countShips += data.spawnRate;
+            planetUI.UpdateCountShips(countShips);
             yield return new WaitForSeconds(1);
         }
     }

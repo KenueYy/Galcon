@@ -5,9 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public List<Planet> choicePlanets;
-
-    [SerializeField]
-    private Camera _mainCamera;
+    public Ship shipPrefab;
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -29,5 +27,18 @@ public class GameManager : MonoBehaviour
             }
             
         }
+        if (Input.GetMouseButtonDown(1))
+        {
+            foreach(Planet planet in choicePlanets)
+            {
+                for(int i = 0; i < planet.countShips; ++i)
+                {
+                    var ship = Instantiate(shipPrefab, planet.transform.parent);
+                    //Vector2 vector2 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    ship.setDir(new Vector2(5,5));
+                }
+            }
+        }
+
     }
 }
