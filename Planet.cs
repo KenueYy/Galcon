@@ -17,6 +17,8 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     private SpriteRenderer _sr;
     private Outline _outline;
     private NavMeshObstacle _obstacle;
+    public int _countAttackers = 0;
+    private Vector2 _mousePos;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -31,15 +33,21 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     {
         OnNotHover();
     }
-    public void Attack(Vector2 dir)
+    public void Attack(Planet planet)
     {
         int countAttackShips = Convert.ToInt32(Mathf.Round(countShips * percentShips));
         countShips -= countAttackShips;
         planetUI.UpdateCountShips(countShips);
-        for(int ship = 0; ship < countAttackShips; ship++)
+        planet.SetCountAttakers(countAttackShips);
+        StartCoroutine(routine: SpawnShipsCoroutine(planet, countAttackShips));
+    }
+    public IEnumerator SpawnShipsCoroutine(Planet planet, int countAttackShips)
+    {
+        for (int ship = 0; ship < countAttackShips; ship++)
         {
             Ship activeShip = Instantiate(shipPrefab, shipSpawnPoint);
-            activeShip.setDir(dir);
+            activeShip.setDir(planet.transform.position);
+            yield return new WaitForSeconds(0.1f);
         }
     }
     public void TakeDamage()
@@ -69,6 +77,10 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     {
         _obstacle.enabled = false;
     }
+    public void SetCountAttakers(int count)
+    {
+        _countAttackers += count;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Ship ship = collision.GetComponent<Ship>();
@@ -76,6 +88,9 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         {
             ship.Delete();
             TakeDamage();
+            _countAttackers--;
+            if (_countAttackers <= 0)
+                EnableObstacle();
         }
     }
     private void Awake()
@@ -87,6 +102,7 @@ public class Planet : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         _sr = GetComponent<SpriteRenderer>();
         _sr.sprite = data.sprite;
         _obstacle = GetComponent<NavMeshObstacle>();
+        _obstacle.radius = data.radius;
     }
     private void OutlineEnable()
     {
