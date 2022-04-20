@@ -2,10 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GameManager : MonoBehaviour
 {
+    
     public List<Planet> choicePlanets;
     public Ship shipPrefab;
+    [SerializeField]
+    private List<Planet> allPlantes;
+    [SerializeField]
+    private List<Planet> playerPlantes;
+    private void Start()
+    {
+        //Planet player = allPlantes[Random.Range(0, allPlantes.Count)];
+        //player.Capture();
+        //playerPlantes.Add(player);
+        playerPlantes[0].Capture();
+    }
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -16,26 +29,32 @@ public class GameManager : MonoBehaviour
             if (hit.collider)
             {
                 Planet planet = hit.collider.GetComponent<Planet>();
-                if (!choicePlanets.Contains(planet))
+                if (planet.is—aptured)
                 {
-                    choicePlanets.Add(planet);
-                }
-                else if (choicePlanets.Contains(planet))
-                {
-                    choicePlanets.Remove(planet);
+                    if (!choicePlanets.Contains(planet))
+                    {
+                        choicePlanets.Add(planet);
+                    }
+                    else if (choicePlanets.Contains(planet))
+                    {
+                        choicePlanets.Remove(planet);
+                    }
                 }
             }
             
         }
         if (Input.GetMouseButtonDown(1))
         {
-            foreach(Planet planet in choicePlanets)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit;
+            hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
+            Planet ChoicePlanet = hit.collider.GetComponent<Planet>();
+            if (hit.collider && !ChoicePlanet.is—aptured)
             {
-                for(int i = 0; i < planet.countShips; ++i)
+                hit.collider.GetComponent<Planet>().DisableObstacle();
+                foreach (Planet planet in choicePlanets)
                 {
-                    var ship = Instantiate(shipPrefab, planet.transform.parent);
-                    //Vector2 vector2 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    ship.setDir(new Vector2(5,5));
+                    planet.Attack(hit.collider.transform.position);
                 }
             }
         }
